@@ -1,0 +1,19 @@
+{
+  "name": "japix",
+  "version": "1.0.0",
+  "description": "API engine",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "api",
+    "engine",
+    "japix"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.3"
+  }
+}
