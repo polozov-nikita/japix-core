@@ -8,19 +8,35 @@ class Https {
      * @private
      */
     static async init(routesTable, props) {
-        let requestUrl = '';
+        if (!props.certificates.privkey) {
+            throw new Error('No server privateKey found'); 
+        }
+        if (!props.certificates.cert) {
+            throw new Error('No server certificate found'); 
+        }
 
-        if ( (props.certificates.privkey === undefined) || (props.certificates.cert === undefined) ) {
-            throw new Error('No certificates found'); 
+        const CAkey = props.certificates.ca ? fs.readFileSync(props.certificates.ca) : null;
+        const ServerCert =  props.certificates.cert ? fs.readFileSync(props.certificates.cert) : null;
+        const ServerCertPassphrase = props.certificates.passphrase;
+        const ServerKey =  props.certificates.privkey ? fs.readFileSync(props.certificates.privkey) : null;
+        const ServerRequestClientCert = props.certificates.requestCert ? true : false;
+        const ServerRejectUnauthorized = props.certificates.rejectUnauthorized ? true : false;
+
+        if (ServerRequestClientCert && !CAkey) {
+            throw new Error('No CAkey found'); 
         }
 
         const option = {
-            key: fs.readFileSync(props.certificates.privkey),
-            cert: fs.readFileSync(props.certificates.cert)
+            key: ServerKey,
+            cert: ServerCert,
+            ca: CAkey,
+            passphrase: ServerCertPassphrase,
+            requestCert: ServerRequestClientCert,
+            rejectUnauthorized: ServerRejectUnauthorized
         };
 
         return https.createServer(option, (request, response) => {
-            requestUrl = url.parse(request.url);
+            let requestUrl = url.parse(request.url);
 
             if (requestUrl.pathname === '/favicon.ico' && props.blockFavicon === true) {
                 return;
