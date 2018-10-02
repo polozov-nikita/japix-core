@@ -15,25 +15,31 @@ class Https {
             throw new Error('No server certificate found'); 
         }
 
-        const CAkey = props.certificates.ca ? fs.readFileSync(props.certificates.ca) : null;
-        const ServerCert =  props.certificates.cert ? fs.readFileSync(props.certificates.cert) : null;
-        const ServerCertPassphrase = props.certificates.passphrase;
-        const ServerKey =  props.certificates.privkey ? fs.readFileSync(props.certificates.privkey) : null;
-        const ServerRequestClientCert = props.certificates.requestCert ? true : false;
-        const ServerRejectUnauthorized = props.certificates.rejectUnauthorized ? true : false;
+        let option = {};
 
-        if (ServerRequestClientCert && !CAkey) {
-            throw new Error('No CAkey found'); 
+        try {
+            const CAkey = props.certificates.ca ? fs.readFileSync(props.certificates.ca) : null;
+            const ServerCert =  fs.readFileSync(props.certificates.cert);
+            const ServerCertPassphrase = props.certificates.passphrase;
+            const ServerKey =  fs.readFileSync(props.certificates.privkey);
+            const ServerRequestClientCert = props.certificates.requestCert ? true : false;
+            const ServerRejectUnauthorized = props.certificates.rejectUnauthorized ? true : false;
+
+            if (ServerRequestClientCert && !CAkey) {
+                throw new Error('No CAkey found'); 
+            }
+    
+            option = {
+                key: ServerKey,
+                cert: ServerCert,
+                ca: CAkey,
+                passphrase: ServerCertPassphrase,
+                requestCert: ServerRequestClientCert,
+                rejectUnauthorized: ServerRejectUnauthorized
+            };
+        } catch (err) {
+            throw err;
         }
-
-        const option = {
-            key: ServerKey,
-            cert: ServerCert,
-            ca: CAkey,
-            passphrase: ServerCertPassphrase,
-            requestCert: ServerRequestClientCert,
-            rejectUnauthorized: ServerRejectUnauthorized
-        };
 
         return https.createServer(option, (request, response) => {
             let requestUrl = url.parse(request.url);
