@@ -51,24 +51,27 @@ class Engine {
         /** 
          * Choosing the protocol
         */
-        switch (this.props.protocol.toLowerCase()) {
-            case 'http':
-                let http = require('./http');
-                await http.listen(this.routesTable, this.props);
-            break;
+       try {
+            switch (this.props.protocol.toLowerCase()) {
+                case 'http':
+                    let http = require('./http');
+                    await http.listen(this.routesTable, this.props);
+                break;
 
-            case 'https':
-                let https = require('./https');
-                await https.listen(this.routesTable, this.props);
-            break;
+                case 'https':
+                    let https = require('./https');
+                    await https.listen(this.routesTable, this.props);                
+                break;
+                case 'http2':
+                    let http2 = require('./http2');
+                    await http2.listen(this.routesTable, this.props);
+                break;
 
-            case 'http2':
-                let http2 = require('./http2');
-                await http2.listen(this.routesTable, this.props);
-            break;
-
-            default:
-            break;
+                default:
+                break;
+            }
+        } catch (err) {
+            console.error(err.stack);
         }
     }
 }

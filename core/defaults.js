@@ -4,5 +4,7 @@ module.exports.startProps = {
     handlersFolder: './handlers',
     blockFavicon: false,
     responseTemplate: null,
-    certificates: {}
+    certificates: {},
+    requestCert: false,
+    rejectUnauthorized: false
 };
