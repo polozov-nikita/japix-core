@@ -42,11 +42,14 @@ class Http {
      * @public
      */
     static async listen(routesTable, props) {
-        this.init(routesTable, props).then(server => {
+        try {
+            let server = await this.init(routesTable, props);
             server.listen(props.port, () => {
                 console.log('JAPIX is working!');
             });
-        })
+        } catch (err) {
+            throw err;
+        }
     }
 }
 
