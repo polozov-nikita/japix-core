@@ -48,7 +48,12 @@ class Engine {
          */
         this.actions = await this.handlersLoader.getEnabledActions({});
         this.routesTable = await Router.getRoutesTable(this.actions);
-        ( this.props.processes === null || isNaN(this.props.processes) || this.props.processes <= 0 ) ? await this.startServer() : await this.createCluster();
+
+        if (this.props.processes) {
+            await this.startServer();
+        } else {
+            await this.createCluster()
+        }
     }
 
     /**
@@ -56,6 +61,9 @@ class Engine {
      * @private
     */
     async createCluster() {
+        if ( isNaN(this.props.processes) || this.props.processes <= 0 ) {
+            return false; 
+        } 
         if (cluster.isMaster) {
             cluster.on('disconnect', (worker, code, signal) => {
                 cluster.fork();
