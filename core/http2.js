@@ -18,15 +18,11 @@ class Http2 {
      * @private
      */
     static async init(routesTable, props) { 
-
-        let server = null;    
-        let requestUrl = '';
-
         if ( (props.certificates.privkey === undefined) || (props.certificates.cert === undefined) ) {
             throw new Error('No certificates found'); 
         }
 
-        server = http2.createSecureServer({
+        const server = http2.createSecureServer({
             key: fs.readFileSync(props.certificates.privkey),
             cert: fs.readFileSync(props.certificates.cert)
         });
@@ -36,8 +32,7 @@ class Http2 {
         }); 
             
         server.on('stream', async (stream, headers, flags) => {
-
-            requestUrl = url.parse(headers[HTTP2_HEADER_PATH]);
+            const requestUrl = url.parse(headers[HTTP2_HEADER_PATH]);
 
             if (requestUrl.pathname === '/favicon.ico' && props.blockFavicon === true) {
                 return;
@@ -82,7 +77,7 @@ class Http2 {
      */
     static async listen(routesTable, props) {
         try {
-            let server = await this.init(routesTable, props);
+            const server = await this.init(routesTable, props);
             server.listen(props.port, () => {
                 console.log('JAPIX is working!');
             });

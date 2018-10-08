@@ -6,11 +6,9 @@ class Http {
     /**
      * @private
      */
-    static async init(routesTable, props) {   
-        let requestUrl = '';
-
+    static async init(routesTable, props) {
         return http.createServer((request, response) => {
-            requestUrl = url.parse(request.url);
+            const requestUrl = url.parse(request.url);
 
             if (requestUrl.pathname === '/favicon.ico' && props.blockFavicon === true) {
                 return;
@@ -43,7 +41,7 @@ class Http {
      */
     static async listen(routesTable, props) {
         try {
-            let server = await this.init(routesTable, props);
+            const server = await this.init(routesTable, props);
             server.listen(props.port, () => {
                 console.log('JAPIX is working!');
             });

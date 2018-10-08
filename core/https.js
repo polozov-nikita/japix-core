@@ -42,7 +42,7 @@ class Https {
         }
 
         return https.createServer(option, (request, response) => {
-            let requestUrl = url.parse(request.url);
+            const requestUrl = url.parse(request.url);
 
             if (requestUrl.pathname === '/favicon.ico' && props.blockFavicon === true) {
                 return;
@@ -75,7 +75,7 @@ class Https {
      */
     static async listen(routesTable, props) {
         try {
-            let server = await this.init(routesTable, props);
+            const server = await this.init(routesTable, props);
             server.listen(props.port, () => {
                 console.log('JAPIX is working!');
             });

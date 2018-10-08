@@ -1,7 +1,9 @@
 module.exports.startProps = {
     port: 1337,
     protocol: 'http',
-    processes: null,
+    clusters: {
+        threads: null
+    }, 
     handlersFolder: './handlers',
     blockFavicon: false,
     responseTemplate: null,

@@ -49,19 +49,19 @@ class Engine {
         this.actions = await this.handlersLoader.getEnabledActions({});
         this.routesTable = await Router.getRoutesTable(this.actions);
 
-        if (this.props.processes) {
-            await this.startServer();
+        if (this.props.clusters.threads) {
+            await this.createCluster();
         } else {
-            await this.createCluster()
+            await this.startServer();
         }
     }
 
     /**
      * Cluster creation
      * @private
-    */
+     */
     async createCluster() {
-        if ( isNaN(this.props.processes) || this.props.processes <= 0 ) {
+        if ( isNaN(this.props.clusters.threads) || this.props.clusters.threads <= 0 ) {
             return false; 
         } 
         if (cluster.isMaster) {
@@ -69,32 +69,32 @@ class Engine {
                 cluster.fork();
             });
         
-            for (let i = 0; i < this.props.processes; i++) {
+            for (let i = 0; i < this.props.clusters.threads; i++) {
                 cluster.fork();
             }
         } else {
             await this.startServer();
-        }
+        } 
     }
 
     /**
-    * Choosing the protocol
-    * @private
-    */
+     * Choosing the protocol
+     * @private
+     */
     async startServer() {
         try {
             switch (this.props.protocol.toLowerCase()) {
                 case 'http':
-                    let http = require('./http');
+                    const http = require('./http');
                     await http.listen(this.routesTable, this.props);
                 break;
 
                 case 'https':
-                    let https = require('./https');
+                    const https = require('./https');
                     await https.listen(this.routesTable, this.props);                
                 break;
                 case 'http2':
-                    let http2 = require('./http2');
+                    const http2 = require('./http2');
                     await http2.listen(this.routesTable, this.props);
                 break;
 
@@ -103,7 +103,7 @@ class Engine {
             }
         } catch (err) {
             console.error(err.stack);
-        }  
+        }
     }
 }
 

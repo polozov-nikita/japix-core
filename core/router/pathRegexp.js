@@ -62,7 +62,7 @@ class PathRegexp {
     
         let startIndex = 0;
 
-        if (param[0] === '?') {
+        if (param[startIndex] === '?') {
             paramData.isRequired = false;
             startIndex++;
         }
